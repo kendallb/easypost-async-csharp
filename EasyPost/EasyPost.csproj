@@ -1,130 +1,28 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion />
     <ProjectGuid>{69683F8C-9306-4ED3-90BD-1F5C2F6977E1}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>EasyPost</RootNamespace>
-    <AssemblyName>EasyPostAsync</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <TargetFramework>net46</TargetFramework>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\EasyPost.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>..\lib\net46\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
-    <DocumentationFile>..\lib\net46\EasyPostAsync.XML</DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>../EasyPost.snk</AssemblyOriginatorKeyFile>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Credentials.cs" />
-    <Compile Include="CarrierField.cs" />
-    <Compile Include="Enumerations.cs" />
-    <Compile Include="Address.cs" />
-    <Compile Include="ApiKey.cs" />
-    <Compile Include="Batch.cs" />
-    <Compile Include="BatchShipment.cs" />
-    <Compile Include="CarrierAccount.cs" />
-    <Compile Include="CarrierDetail.cs" />
-    <Compile Include="CarrierType.cs" />
-    <Compile Include="RequestError.cs" />
-    <Compile Include="IEasyPostClient.cs" />
-    <Compile Include="Error.cs" />
-    <Compile Include="Event.cs" />
-    <Compile Include="EasyPostMessage.cs" />
-    <Compile Include="Options.cs" />
-    <Compile Include="ClientConfiguration.cs" />
-    <Compile Include="Report.cs" />
-    <Compile Include="ReportList.cs" />
-    <Compile Include="EasyPostObject.cs" />
-    <Compile Include="TrackerListOptions.cs" />
-    <Compile Include="ScanFormListOptions.cs" />
-    <Compile Include="Resource.cs" />
-    <Compile Include="ReportListOptions.cs" />
-    <Compile Include="ShipmentListOptions.cs" />
-    <Compile Include="TrackerList.cs" />
-    <Compile Include="ScanFormList.cs" />
-    <Compile Include="Fee.cs" />
-    <Compile Include="Form.cs" />
-    <Compile Include="Order.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="CustomsInfo.cs" />
-    <Compile Include="CustomsItem.cs" />
-    <Compile Include="EasyPostClient.cs" />
-    <Compile Include="IResource.cs" />
-    <Compile Include="Container.cs" />
-    <Compile Include="Parcel.cs" />
-    <Compile Include="Pickup.cs" />
-    <Compile Include="PostageLabel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EasyPostRequest.cs" />
-    <Compile Include="ScanForm.cs" />
-    <Compile Include="Shipment.cs" />
-    <Compile Include="ShipmentList.cs" />
-    <Compile Include="Tracker.cs" />
-    <Compile Include="TrackingDetail.cs" />
-    <Compile Include="TrackingLocation.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="VerificationDetails.cs" />
-    <Compile Include="Verification.cs" />
-    <Compile Include="Verifications.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Rate.cs" />
+    <PackageReference Include="RestSharp" Version="106.11.4" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\EasyPost.snk">
       <Link>EasyPost.snk</Link>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="RestSharp">
-      <Version>106.6.10</Version>
-    </PackageReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

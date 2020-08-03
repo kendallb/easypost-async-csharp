@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -13,7 +13,6 @@ using System.Net;
 using System.Reflection;
 using System.Threading.Tasks;
 using RestSharp;
-using RestSharp.Deserializers;
 using RestSharp.Serialization.Json;
 
 namespace EasyPost
@@ -79,7 +78,7 @@ namespace EasyPost
         private Task<IRestResponse> Execute(
             EasyPostRequest request)
         {
-            return RestClient.ExecuteTaskAsync(PrepareRequest(request));
+            return RestClient.ExecuteAsync(PrepareRequest(request));
         }
 
         /// <summary>
@@ -95,7 +94,7 @@ namespace EasyPost
             if (ExecuteNonAsync) {
                 response = RestClient.Execute<TResponse>(PrepareRequest(request));
             } else {
-                response = await RestClient.ExecuteTaskAsync<TResponse>(PrepareRequest(request));
+                response = await RestClient.ExecuteAsync<TResponse>(PrepareRequest(request));
             }
             var statusCode = response.StatusCode;
             var data = response.Data;
