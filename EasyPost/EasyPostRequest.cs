@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -33,11 +33,6 @@ namespace EasyPost
         /// The underlying RestRequest
         /// </summary>
         public RestRequest RestRequest;
-
-        /// <summary>
-        /// Sets the root element for the response
-        /// </summary>
-        public string RootElement { get => RestRequest.RootElement; set => RestRequest.RootElement = value; }
 
         /// <summary>
         /// Adds a Url segment parameter to the request
@@ -172,7 +167,7 @@ namespace EasyPost
                         result.AddRange(FlattenParameters(list[i], string.Concat(parent, "[", pair.Key, "][", i, "]")));
                     }
                 } else if (pair.Value is DateTime time) {
-                    // Force the date time to be UTC over the wire. Even though the docs say it should handle time 
+                    // Force the date time to be UTC over the wire. Even though the docs say it should handle time
                     // zone offsets, it does not appear to do that.
                     var dateTime = time.ToUniversalTime();
                     result.Add(new KeyValuePair<string, string>(string.Concat(parent, "[", pair.Key, "]"),

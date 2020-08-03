@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -30,14 +30,6 @@ namespace EasyPostTest
         {
             var request = new EasyPostRequest("resource");
             Assert.IsInstanceOfType(request.RestRequest, typeof(RestRequest));
-        }
-
-        [TestMethod]
-        public void TestRootElement()
-        {
-            var request = new EasyPostRequest("resource");
-            request.RootElement = "root";
-            Assert.AreEqual(request.RootElement, "root");
         }
 
         [TestMethod]

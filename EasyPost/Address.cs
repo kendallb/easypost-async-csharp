@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -115,8 +115,8 @@ namespace EasyPost
         /// Create an Address with optional verifications.
         /// </summary>
         /// <param name="address">Address to create</param>
-        /// <param name="verify">Verification flags to to control verification. You can verify the delivery address or the 
-        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsucessful. 
+        /// <param name="verify">Verification flags to to control verification. You can verify the delivery address or the
+        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsucessful.
         /// </param>
         /// <returns>Address instance.</returns>
         public async Task<Address> CreateAddress(
@@ -142,6 +142,11 @@ namespace EasyPost
             return await Execute<Address>(request);
         }
 
+        public class AddressWrapper
+        {
+            public Address Address { get; set; }
+        }
+
         /// <summary>
         /// Verify an address.
         /// </summary>
@@ -155,14 +160,14 @@ namespace EasyPost
             }
 
             var request = new EasyPostRequest("addresses/{id}/verify");
-            request.RootElement = "address";
             request.AddUrlSegment("id", address.Id);
 
             if (carrier != null) {
                 request.AddParameter("carrier", carrier, ParameterType.QueryString);
             }
 
-            return await Execute<Address>(request);
+            var result = await Execute<AddressWrapper>(request);
+            return result?.Address;
         }
     }
 }
