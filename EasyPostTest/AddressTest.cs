@@ -10,7 +10,7 @@ namespace EasyPostTest {
 
         [TestInitialize]
         public void Initialize() {
-            ClientManager.SetCurrent("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            ClientManager.SetCurrent("NvBX2hFF44SVvTPtYjF0zQ");
             address = new Address() {
                 company = "Simpler Postage Inc",
                 street1 = "164 Townsend Street",
@@ -146,7 +146,7 @@ namespace EasyPostTest {
             Assert.IsNotNull(address.id);
             Assert.AreEqual(address.company, "SIMPLER POSTAGE INC");
             Assert.IsNull(address.name);
-            Assert.IsTrue((bool)address.residential);
+            Assert.IsFalse((bool)address.residential);
         }
 
         [TestMethod]
@@ -191,6 +191,32 @@ namespace EasyPostTest {
             Assert.AreEqual(address.company, "SIMPLER POSTAGE INC");
             Assert.IsNull(address.name);
             Assert.AreEqual(address.verifications.delivery.success, true);
+        }
+
+        [TestMethod]
+        public void TestVerificationFailure() {
+            Address address = new Address() {
+                company = "Simpler Postage Inc",
+                street1 = "1645456 Townsend Street",
+                street2 = "Unit 1",
+                city = "San Francisco",
+                state = "CA",
+                country = "US",
+                zip = "94107"
+            };
+
+            address.Create();
+
+            try {
+                address.Verify();
+            }
+            catch (HttpException e) {
+                Assert.AreEqual("ADDRESS.VERIFY.FAILURE", e.Code);
+                Assert.AreEqual("Unable to verify address.", e.Message);
+                Assert.AreEqual("E.ADDRESS.NOT_FOUND", e.Errors[0].code);
+                Assert.AreEqual("address", e.Errors[0].field);
+                Assert.AreEqual("Address not found", e.Errors[0].message);
+            }
         }
     }
 }

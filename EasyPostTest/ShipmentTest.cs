@@ -8,11 +8,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EasyPostTest {
     [TestClass]
     public class ShipmentTest {
-        Dictionary<string, object> parameters, toAddress, fromAddress;
+        Dictionary<string, object> parameters, options, toAddress, fromAddress;
 
         [TestInitialize]
         public void Initialize() {
-            ClientManager.SetCurrent("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            ClientManager.SetCurrent("NvBX2hFF44SVvTPtYjF0zQ");
 
             toAddress = new Dictionary<string, object>() {
                 { "company", "Simpler Postage Inc" },
@@ -32,6 +32,7 @@ namespace EasyPostTest {
                 { "country", "US" },
                 { "zip", "94102" }
             };
+            options = new Dictionary<string, object>();
             parameters = new Dictionary<string, object>() {
                 {"parcel", new Dictionary<string, object>() {
                     { "length", 8 },
@@ -42,7 +43,7 @@ namespace EasyPostTest {
                 { "to_address", toAddress },
                 { "from_address", fromAddress },
                 { "reference", "ShipmentRef" },
-                { "options", new Dictionary<string, object>() }
+                { "options", options }
             };
         }
 
@@ -78,7 +79,7 @@ namespace EasyPostTest {
                 height = 5,
                 weight = 10
             };
-            CustomsItem item = new CustomsItem() { description = "description" };
+            CustomsItem item = new CustomsItem() { description = "description", quantity = 1 };
             CustomsInfo info = new CustomsInfo() {
                 customs_certify = "TRUE",
                 eel_pfc = "NOEEI 30.37(a)",
@@ -107,16 +108,37 @@ namespace EasyPostTest {
 
         [TestMethod]
         public void TestOptions() {
-            String tomorrow = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm:sszzz");
-            ((Dictionary<string, object>)parameters["options"])["label_date"] = tomorrow;
+            string tomorrow = DateTime.Now.AddDays(1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+            options["label_date"] = tomorrow;
+            options["print_custom"] = new List<Dictionary<string, object>>() {
+                new Dictionary<string, object>() {
+                    { "value", "value" },
+                    { "name", "name" },
+                    { "barcode", true }
+                }
+            };
+            options["payment"] = new Dictionary<string, string>() {
+                { "type", "THIRD_PARTY" },
+                { "account", "12345" },
+                { "postal_code", "54321" },
+                { "country", "US" }
+            };
+
             Shipment shipment = Shipment.Create(parameters);
 
-            Assert.AreEqual(((DateTime)shipment.options.label_date).ToString("yyyy-MM-ddTHH:mm:sszzz"), tomorrow);
+            Assert.AreEqual(((DateTime)shipment.options.label_date).ToString("yyyy-MM-ddTHH:mm:ssZ"), tomorrow);
+            Assert.AreEqual(shipment.options.print_custom[0]["value"], "value");
+            Assert.AreEqual(shipment.options.print_custom[0]["name"], "name");
+            Assert.AreEqual(shipment.options.print_custom[0]["barcode"], true);
+            Assert.AreEqual(shipment.options.payment["type"], "THIRD_PARTY");
+            Assert.AreEqual(shipment.options.payment["account"], "12345");
+            Assert.AreEqual(shipment.options.payment["postal_code"], "54321");
+            Assert.AreEqual(shipment.options.payment["country"], "US");
         }
 
         [TestMethod]
         public void TestInstanceOptions() {
-            DateTime tomorrow = DateTime.Now.AddDays(1);
+            DateTime tomorrow = DateTime.SpecifyKind(DateTime.Now.AddDays(1), DateTimeKind.Utc);
 
             Shipment shipment = CreateShipmentResource();
             shipment.options = new Options() {
@@ -124,7 +146,7 @@ namespace EasyPostTest {
             };
             shipment.Create();
 
-            Assert.AreEqual(((DateTime)shipment.options.label_date).ToString("yyyy-MM-ddTHH:mm:sszzz"), tomorrow.ToString("yyyy-MM-ddTHH:mm:sszzz"));
+            Assert.AreEqual(tomorrow.ToString("yyyy-MM-ddTHH:mm:ssZ"), ((DateTime)shipment.options.label_date).ToString("yyyy-MM-ddTHH:mm:ssZ"));
         }
 
         [TestMethod]
@@ -140,9 +162,9 @@ namespace EasyPostTest {
             Shipment shipment = Shipment.Create(parameters);
 
             Assert.IsNotNull(shipment.id);
-            Assert.AreEqual(shipment.messages[0].carrier, "UPS");
+            Assert.AreEqual(shipment.messages[0].carrier, "USPS");
             Assert.AreEqual(shipment.messages[0].type, "rate_error");
-            Assert.AreEqual(shipment.messages[0].message, "Unable to retrieve UPS rates for another carrier's predefined_package parcel type.");
+            Assert.AreEqual(shipment.messages[0].message, "Unable to retrieve USPS rates for another carrier's predefined_package parcel type.");
         }
 
         [TestMethod]
@@ -175,9 +197,27 @@ namespace EasyPostTest {
 
             shipment.Buy(shipment.rates[0]);
             Assert.IsNotNull(shipment.postage_label);
+            Assert.AreNotEqual(shipment.fees.Count, 0);
+            CollectionAssert.AllItemsAreNotNull(shipment.fees.Select(f => f.type).ToList());
 
             shipment.Insure(100.1);
             Assert.AreNotEqual(shipment.insurance, 100.1);
+        }
+
+        [TestMethod]
+        public void TestBuyWithInsurance() {
+            Shipment shipment = Shipment.Create(parameters);
+            shipment.GetRates();
+            shipment.Buy(shipment.rates.First(), "100.00");
+
+            Assert.AreEqual(shipment.insurance, "100.00");
+        }
+
+        [TestMethod]
+        public void TestPostageInline() {
+            options["postage_label_inline"] = true;
+            Shipment shipment = BuyShipment();
+            Assert.IsNotNull(shipment.postage_label.label_file);
         }
 
         [TestMethod]
@@ -188,17 +228,11 @@ namespace EasyPostTest {
         }
 
         [TestMethod]
-        public void TestGenerateLabelStampBarcode() {
+        public void TestGenerateLabel() {
             Shipment shipment = BuyShipment();
 
             shipment.GenerateLabel("pdf");
             Assert.IsNotNull(shipment.postage_label);
-
-            shipment.GenerateStamp();
-            Assert.IsNotNull(shipment.stamp_url);
-
-            shipment.GenerateBarcode();
-            Assert.IsNotNull(shipment.barcode_url);
         }
 
         [TestMethod]
@@ -239,37 +273,38 @@ namespace EasyPostTest {
                 { "height", 5 },
                 { "weight", 10 }
             });
-            CustomsItem item = new CustomsItem() { description = "description" };
+            CustomsItem item = new CustomsItem() { description = "description", quantity = 1 };
             CustomsInfo info = new CustomsInfo() {
                 customs_certify = "TRUE",
                 eel_pfc = "NOEEI 30.37(a)",
                 customs_items = new List<CustomsItem>() { item }
             };
 
-            Shipment shipment = new Shipment();
-            shipment.to_address = to;
-            shipment.from_address = from;
-            shipment.parcel = parcel;
-            shipment.carrier_accounts = new List<CarrierAccount> { new CarrierAccount { id = "ca_qn6QC6fd" } };
+            Shipment shipment = new Shipment {
+                to_address = to,
+                from_address = from,
+                parcel = parcel,
+                carrier_accounts = new List<CarrierAccount> { new CarrierAccount { id = "ca_7642d249fdcf47bcb5da9ea34c96dfcf" } }
+            };
             shipment.Create();
             if (shipment.rates.Count > 0)
-                Assert.IsTrue(shipment.rates.TrueForAll(r => r.carrier_account_id == "ca_qn6QC6fd"));
+                Assert.IsTrue(shipment.rates.TrueForAll(r => r.carrier_account_id == "ca_7642d249fdcf47bcb5da9ea34c96dfcf"));
         }
 
 
         [TestMethod]
         public void TestCarrierAccountsString() {
-            parameters["carrier_accounts"] = new List<string>() { "ca_qn6QC6fd" };
+            parameters["carrier_accounts"] = new List<string>() { "ca_7642d249fdcf47bcb5da9ea34c96dfcf" };
             Shipment shipment = Shipment.Create(parameters);
 
             foreach (Rate rate in shipment.rates) {
-                Assert.AreEqual("ca_qn6QC6fd", rate.carrier_account_id);
+                Assert.AreEqual("ca_7642d249fdcf47bcb5da9ea34c96dfcf", rate.carrier_account_id);
             }
         }
 
         [TestMethod]
         public void TestList() {
-            ShipmentList shipmentList = Shipment.List();
+            ShipmentList shipmentList = Shipment.List(new Dictionary<string, object>() { { "page_size", 1 } });
             Assert.AreNotEqual(0, shipmentList.shipments.Count);
 
             ShipmentList nextShipmentList = shipmentList.Next();
