@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>EasyPost.Async</id>
+    <version>1.0.1</version>
+    <title>EasyPost Async</title>
+    <authors>EasyPost, Kendall Bennett</authors>
+    <owners>kendallbennett</owners>
+    <license type="expression">MIT</license>
+    <projectUrl>https://github.com/kendallb/easypost-async-csharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>EasyPost Async Shipping API Client Library for .NET https://easypost.com/docs</description>
+    <summary>A library for communicating with EasyPost from .NET applications with Task async support. To use this you need an account with EasyPost.</summary>
+    <releaseNotes>Added dependency on RestSharp</releaseNotes>
+    <copyright>Copyright (C) 2020 and later AMain.com, Inc. and EasyPost</copyright>
+    <tags>EasyPost Async ShippingAPI USPS UPS FedEx</tags>
+    <dependencies>
+      <dependency id="RestSharp" version="106.11.4" />
+    </dependencies>
+  </metadata>
+</package>

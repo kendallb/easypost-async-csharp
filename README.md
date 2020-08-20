@@ -8,13 +8,9 @@ Up-to-date documentation at: https://www.easypost.com/docs/api/csharp
 
 ## Installation
 
-NOTE! The NuGet package is not yet developed...
-
 The easiest way to add EasyPost Async to your project is with the NuGet package manager.
 
-```
-Install-Package EasyPost-Async
-```
+    PM> Install-Package EasyPost-Async
 
 See NuGet docs for instructions on installing via the [dialog](http://docs.nuget.org/docs/start-here/managing-nuget-packages-using-the-dialog) or the [console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console).
 

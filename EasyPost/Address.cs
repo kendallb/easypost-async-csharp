@@ -116,7 +116,7 @@ namespace EasyPost
         /// </summary>
         /// <param name="address">Address to create</param>
         /// <param name="verify">Verification flags to to control verification. You can verify the delivery address or the
-        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsucessful.
+        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsuccessful.
         /// </param>
         /// <returns>Address instance.</returns>
         public async Task<Address> CreateAddress(
