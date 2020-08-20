@@ -94,7 +94,7 @@ namespace EasyPost
             if (ExecuteNonAsync) {
                 response = RestClient.Execute<TResponse>(PrepareRequest(request));
             } else {
-                response = await RestClient.ExecuteAsync<TResponse>(PrepareRequest(request));
+                response = await RestClient.ExecuteAsync<TResponse>(PrepareRequest(request)).ConfigureAwait(false);
             }
             var statusCode = response.StatusCode;
             var data = response.Data;
@@ -139,7 +139,7 @@ namespace EasyPost
         }
 
         /// <summary>
-        /// Internal function to prepate the request to be executed
+        /// Internal function to prepare the request to be executed
         /// </summary>
         /// <param name="request">EasyPost request to be executed</param>
         /// <returns>RestSharp request to execute</returns>
