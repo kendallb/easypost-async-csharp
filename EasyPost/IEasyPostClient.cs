@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -32,8 +32,8 @@ namespace EasyPost
         /// Create an Address with optional verifications.
         /// </summary>
         /// <param name="address">Address to create</param>
-        /// <param name="verify">Verification flags to to control verification. You can verify the delivery address or the 
-        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsucessful. 
+        /// <param name="verify">Verification flags to to control verification. You can verify the delivery address or the
+        /// extended zip4 value. If you use the strict versions an HttpException to be raised if unsucessful.
         /// </param>
         /// <returns>Address instance.</returns>
         Task<Address> CreateAddress(
@@ -47,6 +47,16 @@ namespace EasyPost
         Task<Address> VerifyAddress(
             Address address,
             string carrier = null);
+
+        #endregion
+
+        #region ApiKey
+
+        /// <summary>
+        /// Retrieve a list of API Keys
+        /// </summary>
+        /// <returns>List of API keys</returns>
+        Task<List<ApiKey>> GetApiKeys();
 
         #endregion
 
@@ -327,7 +337,7 @@ namespace EasyPost
         /// Purchase a label for this shipment with the given rate.
         /// </summary>
         /// <param name="id">Order id to buy</param>
-        /// <param name="rate">Rate object to puchase the shipment with.</param>
+        /// <param name="rate">Rate object to purchase the shipment with.</param>
         /// <returns>Order instance.</returns>
         Task<Order> BuyOrder(
             string id,
@@ -398,6 +408,14 @@ namespace EasyPost
         #region Report
 
         /// <summary>
+        /// Retrieve a Report from its id.
+        /// </summary>
+        /// <param name="id">String representing a report.</param>
+        /// <returns>Report instance.</returns>
+        Task<Report> GetReport(
+            string id);
+
+        /// <summary>
         /// Retrieve a Report from its id and type.
         /// </summary>
         /// <param name="type">Type of report, e.g. shipment, tracker, payment_log, etc.</param>
@@ -442,6 +460,14 @@ namespace EasyPost
         /// <returns>Instance of ScanFormList</returns>
         Task<ScanFormList> ListScanForms(
             ScanFormListOptions options = null);
+
+        /// <summary>
+        /// Gets a scan form from it's ID
+        /// </summary>
+        /// <param name="id">ID of the scan form</param>
+        /// <returns>Instance of ScanForm</returns>
+        Task<ScanForm> GetScanForm(
+            string id);
 
         #endregion
 
@@ -507,22 +533,6 @@ namespace EasyPost
         Task<Shipment> GenerateLabel(
             string id,
             string fileFormat);
-
-        /// <summary>
-        /// Generate a stamp for this shipment.
-        /// </summary>
-        /// <param name="id">The id of the shipment to generate the stamp for</param>
-        /// <returns>URL for the stamp</returns>
-        Task<string> GenerateStamp(
-            string id);
-
-        /// <summary>
-        /// Generate a barcode for this shipment.
-        /// </summary>
-        /// <param name="id">The id of the shipment to generate the stamp for</param>
-        /// <returns>URL for the barcode</returns>
-        Task<string> GenerateBarcode(
-            string id);
 
         /// <summary>
         /// Send a refund request to the carrier the shipment was purchased from.

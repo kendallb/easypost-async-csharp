@@ -142,7 +142,7 @@ namespace EasyPost
             return await Execute<Address>(request);
         }
 
-        public class AddressWrapper
+        public class AddressWrapper : EasyPostObject
         {
             public Address Address { get; set; }
         }
@@ -167,7 +167,13 @@ namespace EasyPost
             }
 
             var result = await Execute<AddressWrapper>(request);
-            return result?.Address;
+            address = result?.Address;
+            if (address == null && result?.RequestError != null) {
+                return new Address {
+                    RequestError = result.RequestError,
+                };
+            }
+            return address;
         }
     }
 }

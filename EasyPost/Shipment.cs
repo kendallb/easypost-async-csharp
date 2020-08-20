@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -127,6 +127,11 @@ namespace EasyPost
         public string BatchId { get; set; }
 
         /// <summary>
+        /// Not sure what this is for, but it's in the non-async C# library
+        /// </summary>
+        public string OrderId { get; set; }
+
+        /// <summary>
         /// The current state of the associated BatchShipment
         /// </summary>
         public string BatchStatus { get; set; }
@@ -135,16 +140,6 @@ namespace EasyPost
         /// The current message of the associated BatchShipment
         /// </summary>
         public string BatchMessage { get; set; }
-
-        /// <summary>
-        /// The stamp Url
-        /// </summary>
-        public string StampUrl { get; set; }
-
-        /// <summary>
-        /// The barcode Url
-        /// </summary>
-        public string BarcodeUrl { get; set; }
 
         /// <summary>
         /// Carrier accounts to use
@@ -313,36 +308,6 @@ namespace EasyPost
             request.AddParameter("file_format", fileFormat, ParameterType.GetOrPost);
 
             return await Execute<Shipment>(request);
-        }
-
-        /// <summary>
-        /// Generate a stamp for this shipment.
-        /// </summary>
-        /// <param name="id">The id of the shipment to generate the stamp for</param>
-        /// <returns>URL for the stamp</returns>
-        public async Task<string> GenerateStamp(
-            string id)
-        {
-            var request = new EasyPostRequest("shipments/{id}/stamp");
-            request.AddUrlSegment("id", id);
-
-            var response = await Execute<Shipment>(request);
-            return response.StampUrl;
-        }
-
-        /// <summary>
-        /// Generate a barcode for this shipment.
-        /// </summary>
-        /// <param name="id">The id of the shipment to generate the stamp for</param>
-        /// <returns>URL for the barcode</returns>
-        public async Task<string> GenerateBarcode(
-            string id)
-        {
-            var request = new EasyPostRequest("shipments/{id}/barcode");
-            request.AddUrlSegment("id", id);
-
-            var response = await Execute<Shipment>(request);
-            return response.BarcodeUrl;
         }
 
         /// <summary>

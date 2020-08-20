@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -35,34 +35,34 @@ namespace EasyPost
         public bool? Alcohol { get; set; }
 
         /// <summary>
-        /// Setting an account number of the receiver who is to receive and buy the postage.
-        /// . UPS - bill_receiver_postal_code is also required
+        /// *This field is deprecated. Use the 'Payment' option object instead.
         /// </summary>
         public string BillReceiverAccount { get; set; }
 
         /// <summary>
-        /// Setting a postal code of the receiver account you want to buy postage.
-        /// . UPS - bill_receiver_account also required
+        /// *This field is deprecated. Use the 'Payment' option object instead.
         /// </summary>
         public string BillReceiverPostalCode { get; set; }
 
         /// <summary>
-        /// Setting an account number of the third party account you want to buy postage.
-        /// . UPS - bill_third_party_country and bill_third_party_postal_code also required
+        /// *This field is deprecated. Use the 'Payment' option object instead.
         /// </summary>
         public string BillThirdPartyAccount { get; set; }
 
         /// <summary>
-        /// etting a country of the third party account you want to buy postage.
-        /// . UPS - bill_third_party_account and bill_third_party_postal_code also required
+        /// *This field is deprecated. Use the 'Payment' option object instead.
         /// </summary>
         public string BillThirdPartyCountry { get; set; }
 
         /// <summary>
-        /// Setting a postal code of the third party account you want to buy postage.
-        /// . UPS - bill_third_party_country and bill_third_party_account also required
+        /// *This field is deprecated. Use the 'Payment' option object instead.
         /// </summary>
         public string BillThirdPartyPostalCode { get; set; }
+
+        /// <summary>
+        /// Setting payment type to bill the correct account for purchasing postage.
+        /// </summary>
+        public Payment Payment { get; set; }
 
         /// <summary>
         /// Setting this option to true will indicate to the carrier to prefer delivery by drone, if the carrier supports drone delivery.
@@ -95,9 +95,9 @@ namespace EasyPost
         public string Currency { get; set; }
 
         /// <summary>
-        /// Incoterm negotiated for shipment. Supported values are 
-        /// "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", and "CIF". 
-        /// Setting this value to anything other than "DDP" will pass the cost and responsibility of 
+        /// Incoterm negotiated for shipment. Supported values are
+        /// "EXW", "FCA", "CPT", "CIP", "DAT", "DAP", "DDP", "FAS", "FOB", "CFR", and "CIF".
+        /// Setting this value to anything other than "DDP" will pass the cost and responsibility of
         /// duties on to the recipient of the package(s), as specified by Incoterms rules.
         /// </summary>
         public string Incoterm { get; set; }
@@ -214,7 +214,7 @@ namespace EasyPost
         /// . PO - Purchase Order Number
         /// . DP - Department Number
         /// . RMA - Return Merchandise Authorization
-        /// 
+        ///
         /// UPS
         /// . AJ - Accounts Receivable Customer Account
         /// . AT - Appropriation Number
@@ -253,9 +253,9 @@ namespace EasyPost
         // ReSharper restore InconsistentNaming
 
         /// <summary>
-        /// Set this value to true for delivery on Saturday. When setting the saturday_delivery option, you will only get 
-        /// rates for services that are eligible for saturday delivery. If no services are available for saturday delivery, 
-        /// then you will not be returned any rates. You may need to create 2 shipments, one with the saturday_delivery 
+        /// Set this value to true for delivery on Saturday. When setting the saturday_delivery option, you will only get
+        /// rates for services that are eligible for saturday delivery. If no services are available for saturday delivery,
+        /// then you will not be returned any rates. You may need to create 2 shipments, one with the saturday_delivery
         /// option set on one without to get all your eligible rates.
         /// </summary>
         public bool? SaturdayDelivery { get; set; }

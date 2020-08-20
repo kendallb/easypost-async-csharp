@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -55,6 +55,20 @@ namespace EasyPost
     /// </summary>
     public partial class EasyPostClient
     {
+        /// <summary>
+        /// Retrieve a Report from its id.
+        /// </summary>
+        /// <param name="id">String representing a report.</param>
+        /// <returns>Report instance.</returns>
+        public async Task<Report> GetReport(
+            string id)
+        {
+            var request = new EasyPostRequest("reports/{id}");
+            request.AddUrlSegment("id", id);
+
+            return await Execute<Report>(request);
+        }
+
         /// <summary>
         /// Retrieve a Report from its id and type.
         /// </summary>

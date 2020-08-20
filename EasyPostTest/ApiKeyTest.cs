@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace EasyPostTest
 {
     [TestClass]
-    public class CarrierTypeTest
+    public class ApiKeyTest
     {
         private EasyPostClient _client;
 
@@ -23,10 +23,10 @@ namespace EasyPostTest
         }
 
         [TestMethod]
-        public void TestListCarrierTypes()
+        public void TestList()
         {
-            var types = _client.ListCarrierTypes().Result;
-            Assert.AreNotEqual(0, types.Count);
+            var keys = _client.GetApiKeys().Result;
+            Assert.AreEqual(keys.Count, 2);
         }
     }
 }

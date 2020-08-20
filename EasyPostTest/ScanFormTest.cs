@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -19,7 +19,7 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            _client = new EasyPostClient("NvBX2hFF44SVvTPtYjF0zQ");
         }
 
         [TestMethod]
@@ -32,6 +32,13 @@ namespace EasyPostTest
             Assert.AreNotEqual(0, scanFormList.ScanForms.Count);
             var nextScanFormList = scanFormList.Next(_client).Result;
             Assert.AreNotEqual(scanFormList.ScanForms[0].Id, nextScanFormList.ScanForms[0].Id);
+        }
+
+        [TestMethod]
+        public void TestGetScanForm()
+        {
+            var scanForm = _client.GetScanForm("sf_e35ae7fc59bb4482ae32efc663267104").Result;
+            Assert.AreEqual(scanForm.Id, "sf_e35ae7fc59bb4482ae32efc663267104");
         }
     }
 }

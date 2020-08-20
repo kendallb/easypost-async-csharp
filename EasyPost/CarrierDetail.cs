@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -18,7 +18,7 @@ namespace EasyPost
         public DateTime? GuaranteedDeliveryDate { set; get; }
 
         /// <summary>
-        /// Origina location
+        /// Original location
         /// </summary>
         public string OriginLocation { get; set; }
 
@@ -46,5 +46,15 @@ namespace EasyPost
         /// The estimated delivery time as provided by the carrier, in the local time zone (if available)
         /// </summary>
         public DateTime? EstDeliveryTimeLocal { set; get; }
+
+        /// <summary>
+        /// The alternate identifier for this package as provided by the carrier (if available)
+        /// </summary>
+        public string AlternateIdentifier { get; set; }
+
+        /// <summary>
+        /// The date and time of the first attempt by the carrier to deliver the package (if available)
+        /// </summary>
+        public DateTime? InitialDeliveryAttempt { get; set; }
     }
 }

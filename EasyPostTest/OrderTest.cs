@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -25,7 +25,7 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            _client = new EasyPostClient("NvBX2hFF44SVvTPtYjF0zQ");
 
             _toAddress = new Address {
                 Company = "Simpler Postage Inc",
@@ -90,13 +90,13 @@ namespace EasyPostTest
             order = _client.BuyOrder(order.Id, "USPS", "Priority").Result;
             Assert.IsNotNull(order.Shipments[0].PostageLabel);
         }
-        
+
         [TestMethod]
         public void TestOrderCarrierAccounts()
         {
             _testOrder.CarrierAccounts = new List<CarrierAccount> {
                 new CarrierAccount {
-                    Id = "ca_qn6QC6fd",
+                    Id = "ca_7642d249fdcf47bcb5da9ea34c96dfcf",
                 }
             };
             var order = _client.CreateOrder(_testOrder).Result;
@@ -104,12 +104,12 @@ namespace EasyPostTest
             Assert.IsNotNull(order.Id);
             Assert.AreEqual(order.Reference, "OrderRef");
             CollectionAssert.AreEqual(new HashSet<string>(order.Shipments.SelectMany(s => s.Rates).Select(r => r.CarrierAccountId)).ToList(),
-                new List<string> { "ca_qn6QC6fd" });
+                new List<string> { "ca_7642d249fdcf47bcb5da9ea34c96dfcf" });
             Assert.AreEqual(3, order.Rates.Count);
 
             _testOrder.CarrierAccounts = null;
-            order = _client.CreateOrder(_testOrder).Result;
-            Assert.AreEqual(9, order.Rates.Count);
+            var largeOrder = _client.CreateOrder(_testOrder).Result;
+            Assert.IsTrue(order.Rates.Count < largeOrder.Rates.Count);
         }
     }
 }

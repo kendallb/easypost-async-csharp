@@ -379,4 +379,5 @@ All Rights Reserved</s:String>
 	<s:String x:Key="/Default/Housekeeping/ExtensionManager/IncludePrereleasePackages/@EntryValue">False</s:String>
 	<s:Boolean x:Key="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialog/Position/@EntryValue">[0,165.5](1024,1099)</s:String>
-	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialog/SelectedPageId/@EntryValue">Xml</s:String></wpf:ResourceDictionary>
+	<s:String x:Key="/Default/Housekeeping/Layout/DialogWindows/OptionsDialog/SelectedPageId/@EntryValue">Xml</s:String>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Smartpost/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -70,6 +70,20 @@ namespace EasyPost
             var scanFormList = await Execute<ScanFormList>(request);
             scanFormList.Options = options;
             return scanFormList;
+        }
+
+        /// <summary>
+        /// Gets a scan form from it's ID
+        /// </summary>
+        /// <param name="id">ID of the scan form</param>
+        /// <returns>Instance of ScanForm</returns>
+        public async Task<ScanForm> GetScanForm(
+            string id)
+        {
+            var request = new EasyPostRequest("scan_forms/{id}");
+            request.AddUrlSegment("id", id);
+
+            return await Execute<ScanForm>(request);
         }
     }
 }

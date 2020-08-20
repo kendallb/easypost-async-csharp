@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -25,7 +25,7 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            _client = new EasyPostClient("NvBX2hFF44SVvTPtYjF0zQ");
 
             _toAddress = new Address {
                 Company = "Simpler Postage Inc",
@@ -111,27 +111,27 @@ namespace EasyPostTest
         public void TestCreateThenBuyThenGenerateLabelAndScanForm()
         {
             var batch = CreateBatch().Result;
-            
+
             Assert.IsNotNull(batch.Id);
             Assert.AreEqual(batch.Reference, "EasyPostCSharpTest");
             Assert.AreEqual(batch.State, "creating");
-            
+
             while (batch.State == "creating") {
                 batch = _client.GetBatch(batch.Id).Result;
             }
             batch = _client.BuyLabelsForBatch(batch.Id).Result;
-            
+
             while (batch.State == "created") {
                 batch = _client.GetBatch(batch.Id).Result;
             }
             Assert.AreEqual(batch.State, "purchased");
-            
+
             batch = _client.GenerateLabelForBatch(batch.Id, "pdf").Result;
             Assert.AreEqual(batch.State, "label_generating");
-            
+
             batch = _client.GenerateScanFormForBatch(batch.Id).Result;
         }
-        
+
         [TestMethod]
         public void TestGenerateLabelWithOrderBy()
         {

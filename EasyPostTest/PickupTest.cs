@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -23,7 +23,7 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("WzJHJ6SoPnBVYu0ae4aIHA");
+            _client = new EasyPostClient("NvBX2hFF44SVvTPtYjF0zQ");
             _address = new Address {
                 Company = "Simpler Postage Inc",
                 Street1 = "164 Townsend Street",
@@ -66,10 +66,11 @@ namespace EasyPostTest
             _client.BuyShipment(_shipment.Id, _shipment.LowestRate().Id).Wait();
             _testPickup = new Pickup {
                 IsAccountAddress = false,
+                Instructions = "In mailbox.",
                 Address = _address,
                 Shipment = _shipment,
-                MinDatetime = DateTime.Now,
-                MaxDatetime = DateTime.Now,
+                MinDatetime = DateTime.Now.AddDays(1),
+                MaxDatetime = DateTime.Now.AddDays(1),
             };
         }
 
@@ -90,7 +91,7 @@ namespace EasyPostTest
         {
             var pickup = _client.CreatePickup(_testPickup).Result;
 
-            pickup = _client.BuyPickup(pickup.Id, "UPS", pickup.PickupRates[0].Service).Result;
+            pickup = _client.BuyPickup(pickup.Id, pickup.PickupRates[0].Carrier, pickup.PickupRates[0].Service).Result;
             Assert.IsNotNull(pickup.Confirmation);
 
             pickup = _client.CancelPickp(pickup.Id).Result;

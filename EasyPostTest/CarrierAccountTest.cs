@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -19,26 +19,26 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("VJ63zukvLyxz92NKP1k0EQ");
+            _client = new EasyPostClient("GxhY479LTioDWsGcEtSAfQ");
         }
 
         [TestMethod]
         public void TestRetrieve()
         {
-            var account = _client.GetCarrierAccount("ca_7c7X1XzO").Result;
-            Assert.AreEqual("ca_7c7X1XzO", account.Id);
+            var account = _client.GetCarrierAccount("ca_7642d249fdcf47bcb5da9ea34c96dfcf").Result;
+            Assert.AreEqual("ca_7642d249fdcf47bcb5da9ea34c96dfcf", account.Id);
         }
 
         [TestMethod]
         public void TestCrud()
         {
             var account = _client.CreateCarrierAccount(new CarrierAccount {
-                Type = "EndiciaAccount",
+                Type = "DhlExpressAccount",
                 Description = "description",
             }).Result;
 
             Assert.IsNotNull(account.Id);
-            Assert.AreEqual(account.Type, "EndiciaAccount");
+            Assert.AreEqual(account.Type, "DhlExpressAccount");
 
             account.Reference = "new-reference";
             account = _client.UpdateCarrierAccount(account).Result;
@@ -55,7 +55,7 @@ namespace EasyPostTest
         public void TestList()
         {
             var accounts = _client.ListCarrierAccounts().Result;
-            Assert.AreEqual(accounts[0].Id, "ca_7c7X1XzO");
+            Assert.AreEqual(accounts[0].Id, "ca_7642d249fdcf47bcb5da9ea34c96dfcf");
         }
     }
 }

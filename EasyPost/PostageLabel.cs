@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -19,6 +19,7 @@ namespace EasyPost
         public string LabelSize { get; set; }
         public string LabelType { get; set; }
         public string LabelUrl { get; set; }
+        public string LabelFile { get; set; }
         public string LabelFileType { get; set; }
         public string LabelPdfUrl { get; set; }
         public string LabelEpl2Url { get; set; }

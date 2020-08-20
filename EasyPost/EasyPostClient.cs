@@ -108,7 +108,7 @@ namespace EasyPost
                     data = new TResponse();
                     result = data as EasyPostObject;
                     if (response.ErrorMessage == null || result == null) {
-                        return default(TResponse);
+                        return default;
                     }
                     requestError = new RequestError {
                         Code = "RESPONSE.ERROR",

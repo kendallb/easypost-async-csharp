@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -65,24 +65,24 @@ namespace EasyPost
         public string ListCurrency { get; set; }
 
         /// <summary>
-        /// delivery days for this service
+        /// Delivery days for this service
         /// </summary>
-        public int DeliveryDays { get; set; }
+        public int? DeliveryDays { get; set; }
 
         /// <summary>
-        /// date for delivery
+        /// Date for delivery
         /// </summary>
-        public DateTime DeliveryDate { get; set; }
+        public DateTime? DeliveryDate { get; set; }
 
         /// <summary>
-        /// indicates if delivery window is guaranteed (true) or not (false)
+        /// Indicates if delivery window is guaranteed (true) or not (false)
         /// </summary>
         public bool DeliveryDateGuaranteed { get; set; }
 
         /// <summary>
         /// *This field is deprecated and should be ignored.
         /// </summary>
-        public int EstDeliveryDays { get; set; }
+        public int? EstDeliveryDays { get; set; }
     }
 
     /// <summary>

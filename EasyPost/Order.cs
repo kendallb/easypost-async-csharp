@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -134,7 +134,7 @@ namespace EasyPost
         /// Purchase a label for this shipment with the given rate.
         /// </summary>
         /// <param name="id">Order id to buy</param>
-        /// <param name="rate">Rate object to puchase the shipment with.</param>
+        /// <param name="rate">Rate object to purchase the shipment with.</param>
         /// <returns>Order instance.</returns>
         public async Task<Order> BuyOrder(
             string id,

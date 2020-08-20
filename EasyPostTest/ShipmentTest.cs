@@ -1,6 +1,6 @@
 ﻿/*
  * Licensed under The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2014 EasyPost
  * Copyright (C) 2017 AMain.com, Inc.
  * All Rights Reserved
@@ -8,6 +8,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using EasyPost;
 
@@ -24,7 +25,7 @@ namespace EasyPostTest
         [TestInitialize]
         public void Initialize()
         {
-            _client = new EasyPostClient("cueqNZUb3ldeWTNX7MU3Mel8UXtaAMUi");
+            _client = new EasyPostClient("NvBX2hFF44SVvTPtYjF0zQ");
 
             _toAddress = new Address {
                 Company = "Simpler Postage Inc",
@@ -59,7 +60,8 @@ namespace EasyPostTest
                     EelPfc = "NOEEI 30.37(a)",
                     CustomsItems = new List<CustomsItem> {
                         new CustomsItem {
-                            Description = "description"
+                            Description = "description",
+                            Quantity = 1,
                         }
                     }
                 },
@@ -92,12 +94,32 @@ namespace EasyPostTest
         {
             var tomorrow = DateTime.Now.AddDays(1);
             _testShipment.Options = new Options {
-                LabelDate = tomorrow
+                LabelDate = tomorrow,
+                PrintCustom_1 = "barcode",
+                PrintCustom_1Barcode = true,
+                PrintCustom_1Code = "PO",
+
+                // TODO: This is currently crashing something on their end ...
+                // Payment = new Payment {
+                //     Type = "THIRD_PARTY",
+                //     Account = "12345",
+                //     PostalCode = "54321",
+                //     Country = "US",
+                // },
             };
             var shipment = _client.CreateShipment(_testShipment).Result;
 
             shipment.Options.LabelDate = shipment.Options.LabelDate.Value.ToLocalTime();
             Assert.AreEqual(shipment.Options.LabelDate.Value.ToString("yyyy-MM-ddTHH:mm:sszzz"), tomorrow.ToString("yyyy-MM-ddTHH:mm:sszzz"));
+
+            Assert.AreEqual(shipment.Options.PrintCustom_1, "barcode");
+            Assert.AreEqual(shipment.Options.PrintCustom_1Code, "PO");
+            Assert.AreEqual(shipment.Options.PrintCustom_1Barcode, true);
+            Assert.AreEqual(shipment.Options.Payment.Type, "SENDER");
+            // Assert.AreEqual(shipment.Options.Payment.Type, "THIRD_PARTY");
+            // Assert.AreEqual(shipment.Options.Payment.Account, "12345");
+            // Assert.AreEqual(shipment.Options.Payment.PostalCode, "54321");
+            // Assert.AreEqual(shipment.Options.Payment.Country, "US");
         }
 
         [TestMethod]
@@ -107,15 +129,15 @@ namespace EasyPostTest
                 ToAddress = _toAddress,
                 FromAddress = _fromAddress,
                 Parcel = new Parcel {
-                    Weight = 10,  
+                    Weight = 10,
                     PredefinedPackage = "FEDEXBOX",
                 },
             }).Result;
 
             Assert.IsNotNull(shipment.Id);
-            Assert.AreEqual(shipment.Messages[0].Carrier, "UPS");
+            Assert.AreEqual(shipment.Messages[0].Carrier, "USPS");
             Assert.AreEqual(shipment.Messages[0].Type, "rate_error");
-            Assert.AreEqual(shipment.Messages[0].Message, "Unable to retrieve UPS rates for another carrier's predefined_package parcel type.");
+            Assert.AreEqual(shipment.Messages[0].Message, "Unable to retrieve USPS rates for another carrier's predefined_package parcel type.");
         }
 
         [TestMethod]
@@ -136,6 +158,8 @@ namespace EasyPostTest
 
             shipment = _client.BuyShipment(shipment.Id, shipment.Rates[0].Id).Result;
             Assert.IsNotNull(shipment.PostageLabel);
+            Assert.AreNotEqual(shipment.Fees.Count, 0);
+            CollectionAssert.AllItemsAreNotNull(shipment.Fees.Select(f => f.Type).ToList());
 
             shipment = _client.BuyInsuranceForShipment(shipment.Id, 100.1).Result;
             Assert.AreNotEqual(shipment.Insurance, 100.1);
@@ -150,18 +174,12 @@ namespace EasyPostTest
         }
 
         [TestMethod]
-        public void TestGenerateLabelStampBarcode()
+        public void TestGenerateLabel()
         {
             var shipment = BuyShipment();
 
             shipment = _client.GenerateLabel(shipment.Id, "pdf").Result;
             Assert.IsNotNull(shipment.PostageLabel);
-
-            var url = _client.GenerateStamp(shipment.Id);
-            Assert.IsNotNull(url);
-
-            url = _client.GenerateBarcode(shipment.Id);
-            Assert.IsNotNull(url);
         }
 
         [TestMethod]
@@ -197,10 +215,10 @@ namespace EasyPostTest
         public void TestCarrierAccounts()
         {
             var shipment = _testShipment;
-            shipment.CarrierAccounts = new List<CarrierAccount> { new CarrierAccount { Id = "ca_qn6QC6fd" } };
+            shipment.CarrierAccounts = new List<CarrierAccount> { new CarrierAccount { Id = "ca_7642d249fdcf47bcb5da9ea34c96dfcf" } };
             shipment = _client.CreateShipment(_testShipment).Result;
             if (shipment.Rates.Count > 0) {
-                Assert.IsTrue(shipment.Rates.TrueForAll(r => r.CarrierAccountId == "ca_qn6QC6fd"));
+                Assert.IsTrue(shipment.Rates.TrueForAll(r => r.CarrierAccountId == "ca_7642d249fdcf47bcb5da9ea34c96dfcf"));
             }
         }
 
