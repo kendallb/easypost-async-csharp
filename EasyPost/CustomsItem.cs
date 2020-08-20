@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace EasyPost {
     public class CustomsItem : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
@@ -17,6 +18,7 @@ namespace EasyPost {
         public string code { get; set; }
         public string mode { get; set; }
         public string currency { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Retrieve a CustomsItem from its id.
@@ -24,7 +26,7 @@ namespace EasyPost {
         /// <param name="id">String representing a CustomsItem. Starts with "cstitem_".</param>
         /// <returns>EasyPost.CustomsItem instance.</returns>
         public static CustomsItem Retrieve(string id) {
-            Request request = new Request("customs_items/{id}");
+            Request request = new Request("v2/customs_items/{id}");
             request.AddUrlSegment("id", id);
 
             return request.Execute<CustomsItem>();
@@ -45,8 +47,8 @@ namespace EasyPost {
         /// </param>
         /// <returns>EasyPost.CustomsItem instance.</returns>
         public static CustomsItem Create(Dictionary<string, object> parameters) {
-            Request request = new Request("customs_items", Method.POST);
-            request.AddBody(parameters, "customs_item");
+            Request request = new Request("v2/customs_items", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "customs_item", parameters } });
 
             return request.Execute<CustomsItem>();
         }

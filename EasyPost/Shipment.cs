@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace EasyPost {
     public class Shipment : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public string mode { get; set; }
         public DateTime? created_at { get; set; }
@@ -34,9 +35,10 @@ namespace EasyPost {
         public string batch_status { get; set; }
         public string batch_message { get; set; }
         public string usps_zone { get; set; }
-        public string stamp_url { get; set; }
-        public string barcode_url { get; set; }
         public List<CarrierAccount> carrier_accounts { get; set; }
+        public string batch_id { get; set; }
+        public string order_id { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Get a paginated list of shipments.
@@ -53,7 +55,7 @@ namespace EasyPost {
         /// </param>
         /// <returns>Instance of EasyPost.ShipmentList</returns>
         public static ShipmentList List(Dictionary<string, object> parameters = null) {
-            Request request = new Request("shipments");
+            Request request = new Request("v2/shipments");
             request.AddQueryString(parameters ?? new Dictionary<string, object>());
 
             ShipmentList shipmentList = request.Execute<ShipmentList>();
@@ -67,7 +69,7 @@ namespace EasyPost {
         /// <param name="id">String representing a Shipment. Starts with "shp_".</param>
         /// <returns>EasyPost.Shipment instance.</returns>
         public static Shipment Retrieve(string id) {
-            Request request = new Request("shipments/{id}");
+            Request request = new Request("v2/shipments/{id}");
             request.AddUrlSegment("id", id);
 
             return request.Execute<Shipment>();
@@ -78,22 +80,22 @@ namespace EasyPost {
         /// </summary>
         /// <param name="parameters">
         /// Optional dictionary containing parameters to create the shipment with. Valid pairs:
-        ///   * {"from_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"to_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"buyer_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"return_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"parcel", Dictionary<string, object>} See Parcel.Create for list of valid keys.
-        ///   * {"customs_info", Dictionary<string, object>} See CustomsInfo.Create for lsit of valid keys.
-        ///   * {"options", Dictionary<string, object>} See https://www.easypost.com/docs/api#shipments for list of options.
+        ///   * {"from_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"to_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"buyer_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"return_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"parcel", Dictionary&lt;string, object&gt;} See Parcel.Create for list of valid keys.
+        ///   * {"customs_info", Dictionary&lt;string, object&gt;} See CustomsInfo.Create for lsit of valid keys.
+        ///   * {"options", Dictionary&lt;string, object&gt;} See https://www.easypost.com/docs/api#shipments for list of options.
         ///   * {"is_return", bool}
         ///   * {"currency", string} Defaults to "USD".
         ///   * {"reference", string}
-        ///   * {"carrier_accounts", List<string>} List of CarrierAccount.id to limit rating.
+        ///   * {"carrier_accounts", List&lt;string&gt;} List of CarrierAccount.id to limit rating.
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.Batch instance.</returns>
         public static Shipment Create(Dictionary<string, object> parameters = null) {
-            return sendCreate(parameters ?? new Dictionary<string, object>());
+            return SendCreate(parameters ?? new Dictionary<string, object>());
         }
 
         /// <summary>
@@ -103,24 +105,24 @@ namespace EasyPost {
         public void Create() {
             if (id != null)
                 throw new ResourceAlreadyCreated();
-            Merge(sendCreate(this.AsDictionary()));
+            Merge(SendCreate(this.AsDictionary()));
         }
 
-        private static Shipment sendCreate(Dictionary<string, object> parameters) {
-            Request request = new Request("shipments", Method.POST);
-            request.AddBody(parameters, "shipment");
+        private static Shipment SendCreate(Dictionary<string, object> parameters) {
+            Request request = new Request("v2/shipments", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "shipment", parameters } });
 
             return request.Execute<Shipment>();
         }
 
         /// <summary>
-        /// Populate the rates property for this shipment
+        /// Populate the rates property for this Shipment.
         /// </summary>
         public void GetRates() {
             if (id == null)
                 Create();
 
-            Request request = new Request("shipments/{id}/rates");
+            Request request = new Request("v2/shipments/{id}/rates");
             request.AddUrlSegment("id", id);
 
             rates = request.Execute<Shipment>().rates;
@@ -130,10 +132,19 @@ namespace EasyPost {
         /// Purchase a label for this shipment with the given rate.
         /// </summary>
         /// <param name="rateId">The id of the rate to purchase the shipment with.</param>
-        public void Buy(string rateId) {
-            Request request = new Request("shipments/{id}/buy", Method.POST);
+        /// <param name="insuranceValue">The value to insure the shipment for.</param>
+
+        public void Buy(string rateId, string insuranceValue = null) {
+            Request request = new Request("v2/shipments/{id}/buy", Method.POST);
             request.AddUrlSegment("id", id);
-            request.AddBody(new Dictionary<string, object>() { { "id", rateId } }, "rate");
+
+            Dictionary<string, object> body = new Dictionary<string, object>() { { "rate", new Dictionary<string, object>() { { "id", rateId } } } };
+
+            if (insuranceValue != null) {
+                body["insurance"] = insuranceValue;
+            }
+
+            request.AddBody(body);
 
             Shipment result = request.Execute<Shipment>();
 
@@ -151,8 +162,9 @@ namespace EasyPost {
         /// Purchase a label for this shipment with the given rate.
         /// </summary>
         /// <param name="rate">EasyPost.Rate object to puchase the shipment with.</param>
-        public void Buy(Rate rate) {
-            Buy(rate.id);
+        /// <param name="insuranceValue">The value to insure the shipment for.</param>
+        public void Buy(Rate rate, string insuranceValue = null) {
+            Buy(rate.id, insuranceValue);
         }
 
         /// <summary>
@@ -160,11 +172,9 @@ namespace EasyPost {
         /// </summary>
         /// <param name="amount">The amount to insure the shipment for. Currency is provided when creating a shipment.</param>
         public void Insure(double amount) {
-            Request request = new Request("shipments/{id}/insure", Method.POST);
+            Request request = new Request("v2/shipments/{id}/insure", Method.POST);
             request.AddUrlSegment("id", id);
-            request.AddBody(new List<Tuple<string, string>>() {
-                new Tuple<string, string>("amount", amount.ToString())
-            });
+            request.AddQueryString(new Dictionary<string, object>() { { "amount", amount } });
 
             Merge(request.Execute<Shipment>());
         }
@@ -174,7 +184,7 @@ namespace EasyPost {
         /// </summary>
         /// <param name="fileFormat">Format to generate the label in. Valid formats: "pdf", "zpl" and "epl2".</param>
         public void GenerateLabel(string fileFormat) {
-            Request request = new Request("shipments/{id}/label");
+            Request request = new Request("v2/shipments/{id}/label");
             request.AddUrlSegment("id", id);
             // This is a GET, but uses the request body, so use ParameterType.GetOrPost instead.
             request.AddParameter("file_format", fileFormat, ParameterType.GetOrPost);
@@ -183,32 +193,10 @@ namespace EasyPost {
         }
 
         /// <summary>
-        /// Generate a stamp for this shipment.
-        /// </summary>
-        public void GenerateStamp() {
-            Request request = new Request("shipments/{id}/stamp");
-            request.AddUrlSegment("id", id);
-
-            Shipment result = request.Execute<Shipment>();
-            stamp_url = result.stamp_url;
-        }
-
-        /// <summary>
-        /// Generate a barcode for this shipment.
-        /// </summary>
-        public void GenerateBarcode() {
-            Request request = new Request("shipments/{id}/barcode");
-            request.AddUrlSegment("id", id);
-
-            Shipment result = request.Execute<Shipment>();
-            barcode_url = result.barcode_url;
-        }
-
-        /// <summary>
         /// Send a refund request to the carrier the shipment was purchased from.
         /// </summary>
         public void Refund() {
-            Request request = new Request("shipments/{id}/refund");
+            Request request = new Request("v2/shipments/{id}/refund");
             request.AddUrlSegment("id", id);
 
             Merge(request.Execute<Shipment>());
@@ -230,18 +218,18 @@ namespace EasyPost {
             List<Rate> result = new List<Rate>(rates);
 
             if (includeCarriers != null)
-                filterRates(ref result, rate => includeCarriers.Contains(rate.carrier));
+                FilterRates(ref result, rate => includeCarriers.Contains(rate.carrier));
             if (includeServices != null)
-                filterRates(ref result, rate => includeServices.Contains(rate.service));
+                FilterRates(ref result, rate => includeServices.Contains(rate.service));
             if (excludeCarriers != null)
-                filterRates(ref result, rate => !excludeCarriers.Contains(rate.carrier));
+                FilterRates(ref result, rate => !excludeCarriers.Contains(rate.carrier));
             if (excludeServices != null)
-                filterRates(ref result, rate => !excludeServices.Contains(rate.service));
+                FilterRates(ref result, rate => !excludeServices.Contains(rate.service));
 
             return result.OrderBy(rate => double.Parse(rate.rate)).FirstOrDefault();
         }
 
-        private void filterRates(ref List<Rate> rates, Func<Rate, bool> filter) {
+        private void FilterRates(ref List<Rate> rates, Func<Rate, bool> filter) {
             rates = rates.Where(filter).ToList();
         }
     }

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using RestSharp;
+
 namespace EasyPost {
     public class ScanForm : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
@@ -14,6 +17,7 @@ namespace EasyPost {
         public string status { get; set; }
         public string message { get; set; }
         public string batch_id { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Get a paginated list of scan forms.
@@ -29,12 +33,40 @@ namespace EasyPost {
         /// </param>
         /// <returns>Instance of EasyPost.ScanForm</returns>
         public static ScanFormList List(Dictionary<string, object> parameters = null) {
-            Request request = new Request("scan_forms");
+            Request request = new Request("v2/scan_forms");
             request.AddQueryString(parameters ?? new Dictionary<string, object>());
 
             ScanFormList scanFormList = request.Execute<ScanFormList>();
             scanFormList.filters = parameters;
             return scanFormList;
+        }
+
+        /// <summary>
+        /// Create a ScanForm.
+        /// </summary>
+        /// <param name="shipments">Shipments to be associated with the ScanForm. Only id is required.</param>
+        /// <returns>EasyPost.ScanForm instance.</returns>
+        public static ScanForm Create(List<Shipment> shipments) {
+            Dictionary<string, object> parameters = new Dictionary<string, object> {
+                { "shipments", shipments }
+            };
+
+            Request request = new Request("v2/scan_forms", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "scan_form", parameters } });
+
+            return request.Execute<ScanForm>();
+        }
+
+        /// <summary>
+        /// Retrieve a ScanForm from its id.
+        /// </summary>
+        /// <param name="id">String representing a scan form, starts with "sf_".</param>
+        /// <returns>EasyPost.ScanForm instance.</returns>
+        public static ScanForm Retrieve(string id) {
+            Request request = new Request("v2/scan_forms/{id}");
+            request.AddUrlSegment("id", id);
+
+            return request.Execute<ScanForm>();
         }
     }
 }

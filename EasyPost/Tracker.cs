@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace EasyPost {
     public class Tracker : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime tracking_updated_at { get; set; }
@@ -18,6 +19,7 @@ namespace EasyPost {
         public string public_url { get; set; }
         public List<TrackingDetail> tracking_details { get; set; }
         public CarrierDetail carrier_detail { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Get a paginated list of trackers.
@@ -35,7 +37,7 @@ namespace EasyPost {
         /// </param>
         /// <returns>Instance of EasyPost.ShipmentList</returns>
         public static TrackerList List(Dictionary<string, object> parameters = null) {
-            Request request = new Request("trackers");
+            Request request = new Request("v2/trackers");
             request.AddQueryString(parameters ?? new Dictionary<string, object>());
 
             TrackerList trackerList = request.Execute<TrackerList>();
@@ -44,12 +46,12 @@ namespace EasyPost {
         }
 
         public static Tracker Create(string carrier, string trackingCode) {
-            Request request = new Request("trackers", RestSharp.Method.POST);
+            Request request = new Request("v2/trackers", RestSharp.Method.POST);
             Dictionary<string, object> parameters = new Dictionary<string, object>() {
                 { "tracking_code", trackingCode }, { "carrier", carrier }
             };
 
-            request.AddBody(parameters, "tracker");
+            request.AddBody(new Dictionary<string, object>() { { "tracker", parameters } });
 
             return request.Execute<Tracker>();
         }
@@ -60,7 +62,7 @@ namespace EasyPost {
         /// <param name="id">String representing a Tracker. Starts with "trk_".</param>
         /// <returns>EasyPost.Tracker instance.</returns>
         public static Tracker Retrieve(string id) {
-            Request request = new Request("trackers/{id}");
+            Request request = new Request("v2/trackers/{id}");
             request.AddUrlSegment("id", id);
 
             return request.Execute<Tracker>();

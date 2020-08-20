@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace EasyPost {
     public class User : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public string parent_id { get; set; }
         public DateTime? created_at { get; set; }
@@ -21,6 +22,7 @@ namespace EasyPost {
         public string recharge_threshold { get; set; }
         public List<User> children { get; set; }
         public List<ApiKey> api_keys { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Retrieve a User from its id. If no id is specified, it returns the user for the api_key specified.
@@ -31,9 +33,9 @@ namespace EasyPost {
             Request request;
 
             if (id == null) {
-                request = new Request("users");
+                request = new Request("v2/users");
             } else {
-                request = new Request("users/{id}");
+                request = new Request("v2/users/{id}");
                 request.AddUrlSegment("id", id);
             }
 
@@ -50,8 +52,8 @@ namespace EasyPost {
         /// </param>
         /// <returns>EasyPost.User instance.</returns>
         public static User Create(Dictionary<string, object> parameters) {
-            Request request = new Request("users", Method.POST);
-            request.AddBody(parameters, "user");
+            Request request = new Request("v2/users", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "user", parameters } });
 
             return request.Execute<User>();
         }
@@ -70,15 +72,18 @@ namespace EasyPost {
         /// All invalid keys will be ignored.
         /// </param>
         public void Update(Dictionary<string, object> parameters) {
-            Request request = new Request("users/{id}", Method.PUT);
+            Request request = new Request("v2/users/{id}", Method.PUT);
             request.AddUrlSegment("id", id);
-            request.AddBody(parameters, "user");
+            request.AddBody(new Dictionary<string, object>() { { "user", parameters } });
 
             Merge(request.Execute<User>());
         }
 
+        /// <summary>
+        /// Delete the user.
+        /// </summary>
         public void Destroy() {
-            Request request = new Request("users/{id}", Method.DELETE);
+            Request request = new Request("v2/users/{id}", Method.DELETE);
             request.AddUrlSegment("id", id);
             request.Execute();
         }

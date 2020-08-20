@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace EasyPost {
     public class Order : Resource {
+#pragma warning disable IDE1006 // Naming Styles
         public string id { get; set; }
         public DateTime? created_at { get; set; }
         public DateTime? updated_at { get; set; }
@@ -20,8 +21,7 @@ namespace EasyPost {
         public List<Shipment> shipments { get; set; }
         public List<CarrierAccount> carrier_accounts { get; set; }
         public List<Rate> rates { get; set; }
-        public List<Container> containers { get; set; }
-        public List<Item> items { get; set; }
+#pragma warning restore IDE1006 // Naming Styles
 
         /// <summary>
         /// Retrieve a Order from its id or reference.
@@ -29,7 +29,7 @@ namespace EasyPost {
         /// <param name="id">String representing a Order. Starts with "order_" if passing an id.</param>
         /// <returns>EasyPost.Order instance.</returns>
         public static Order Retrieve(string id) {
-            Request request = new Request("orders/{id}");
+            Request request = new Request("v2/orders/{id}");
             request.AddUrlSegment("id", id);
 
             return request.Execute<Order>();
@@ -40,23 +40,23 @@ namespace EasyPost {
         /// </summary>
         /// <param name="parameters">
         /// Dictionary containing parameters to create the order with. Valid pairs:
-        ///   * {"from_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"to_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"buyer_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"return_address", Dictionary<string, object>} See Address.Create for a list of valid keys.
-        ///   * {"customs_info", Dictionary<string, object>} See CustomsInfo.Create for list of valid keys.
+        ///   * {"from_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"to_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"buyer_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"return_address", Dictionary&lt;string, object&gt;} See Address.Create for a list of valid keys.
+        ///   * {"customs_info", Dictionary&lt;string, object&gt;} See CustomsInfo.Create for list of valid keys.
         ///   * {"is_return", bool}
         ///   * {"reference", string}
-        ///   * {"shipments", IEnumerable<Shipment>} See Shipment.Create for list of valid keys.
-        ///   * {"carrier_accounts", IEnumerable<CarrierAccount>}
-        ///   * {"containers", IEnumerable<Container>} See Container.Create for list of valid keys.
-        ///   * {"items", IEnumerable<Item>} See Item.Create for list of valid keys.
+        ///   * {"shipments", IEnumerable&lt;Shipment&gt;} See Shipment.Create for list of valid keys.
+        ///   * {"carrier_accounts", IEnumerable&lt;CarrierAccount&gt;}
+        ///   * {"containers", IEnumerable&lt;Container&gt;} See Container.Create for list of valid keys.
+        ///   * {"items", IEnumerable&lt;Item&gt;} See Item.Create for list of valid keys.
         /// All invalid keys will be ignored.
         /// </param>
         /// <returns>EasyPost.Order instance.</returns>
         public static Order Create(Dictionary<string, object> parameters) {
-            Request request = new Request("orders", Method.POST);
-            request.AddBody(parameters, "order");
+            Request request = new Request("v2/orders", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "order", parameters } });
 
             return request.Execute<Order>();
         }
@@ -68,12 +68,25 @@ namespace EasyPost {
         public void Create() {
             if (id != null)
                 throw new ResourceAlreadyCreated();
-            Merge(sendCreate(this.AsDictionary()));
+            Merge(SendCreate(this.AsDictionary()));
         }
 
-        private static Order sendCreate(Dictionary<string, object> parameters) {
-            Request request = new Request("orders", Method.POST);
-            request.AddBody(parameters, "order");
+        /// <summary>
+        /// Populate the rates property for this Order.
+        /// </summary>
+        public void GetRates() {
+            if (id == null)
+                Create();
+
+            Request request = new Request("v2/orders/{id}/rates");
+            request.AddUrlSegment("id", id);
+
+            rates = request.Execute<Order>().rates;
+        }
+
+        private static Order SendCreate(Dictionary<string, object> parameters) {
+            Request request = new Request("v2/orders", Method.POST);
+            request.AddBody(new Dictionary<string, object>() { { "order", parameters } });
 
             return request.Execute<Order>();
         }
@@ -84,9 +97,9 @@ namespace EasyPost {
         /// <param name="carrier">The carrier to purchase a shipment from.</param>
         /// <param name="service">The service to purchase.</param>
         public void Buy(string carrier, string service) {
-            Request request = new Request("orders/{id}/buy", Method.POST);
+            Request request = new Request("v2/orders/{id}/buy", Method.POST);
             request.AddUrlSegment("id", id);
-            request.AddBody(new List<Tuple<string, string>>() { new Tuple<string, string>("carrier", carrier), new Tuple<string, string>("service", service) });
+            request.AddQueryString(new Dictionary<string, object>() { { "carrier", carrier }, { "service", service } });
 
             Merge(request.Execute<Order>());
         }
