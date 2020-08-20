@@ -59,7 +59,7 @@ Address address = new Address() {
     verify = new List<string>() { "delivery" }
 };
 
-Address address = address.Create();
+address.Create();
 
 if (address.verifications.delivery.success) {
     // successful verification
@@ -156,12 +156,12 @@ Shipment shipment = new Shipment() {
     to_address = toAddress,
     parcel = parcel,
     customs_info = info,
-    optoins = options
+    options = options
 };
 
 shipment.Buy(shipment.LowestRate(
-    includeServices: new List<Service>() { Service.Priority },
-    excludeCarriers: new List<Carrier>() { Carrier.USPS }
+    includeServices: new List<string>() { "Priority" },
+    excludeCarriers: new List<string>() { "USPS" }
 ));
 
 shipment.postage_label.url; // https://easypost-files.s3-us-west-2.amazonaws.com/files/postage_label/20160826/8e77c397d47b4d088f1c684b7acd802a.png
@@ -201,6 +201,14 @@ batch.GenerateLabel("zpl"); // populates batch.label_url asynchronously
 ```
 
 Consume the subsequent `batch.updated` webhook to process further.
+
+### Releasing
+
+1. Update the [CHANGELOG](CHANGELOG.md)
+1. Bump version in `EasyPost.nuspec`
+1. Rebuild the library
+1. Create a git tag
+1. Publish new Nuget package
 
 ### Reporting Issues
 

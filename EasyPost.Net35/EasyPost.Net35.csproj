@@ -29,6 +29,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>..\lib\net35\EasyPost.Net35.XML</DocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
@@ -37,12 +39,11 @@
     <AssemblyOriginatorKeyFile>EasyPost.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp, Version=100.0.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharpSigned.105.1.0\lib\net35\RestSharp.dll</HintPath>
+      <HintPath>..\packages\RestSharpSigned.105.2.3\lib\net35\RestSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -83,9 +84,6 @@
     <Compile Include="..\EasyPost\ClientManager.cs">
       <Link>ClientManager.cs</Link>
     </Compile>
-    <Compile Include="..\EasyPost\Container.cs">
-      <Link>Container.cs</Link>
-    </Compile>
     <Compile Include="..\EasyPost\CustomsInfo.cs">
       <Link>CustomsInfo.cs</Link>
     </Compile>
@@ -100,9 +98,6 @@
     </Compile>
     <Compile Include="..\EasyPost\IResource.cs">
       <Link>IResource.cs</Link>
-    </Compile>
-    <Compile Include="..\EasyPost\Item.cs">
-      <Link>Item.cs</Link>
     </Compile>
     <Compile Include="..\EasyPost\Order.cs">
       <Link>Order.cs</Link>
@@ -121,6 +116,9 @@
     </Compile>
     <Compile Include="..\EasyPost\Rate.cs">
       <Link>Rate.cs</Link>
+    </Compile>
+    <Compile Include="..\EasyPost\Rating.cs">
+      <Link>Rating.cs</Link>
     </Compile>
     <Compile Include="..\EasyPost\Request.cs">
       <Link>Request.cs</Link>
@@ -179,6 +177,12 @@
     </Compile>
     <Compile Include="..\EasyPost\Verifications.cs">
       <Link>Verifications.cs</Link>
+    </Compile>
+    <Compile Include="..\EasyPost\Webhook.cs">
+      <Link>Webhook.cs</Link>
+    </Compile>
+    <Compile Include="..\EasyPost\WebhookList.cs">
+      <Link>WebhookList.cs</Link>
     </Compile>
     <Compile Include="..\EasyPost\Error.cs">
       <Link>Error.cs</Link>
