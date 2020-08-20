@@ -21,7 +21,7 @@
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>EasyPost.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\EasyPost.snk</AssemblyOriginatorKeyFile>
     <AssemblyVersion>2.5.1.3</AssemblyVersion>
     <FileVersion>2.5.1.3</FileVersion>
   </PropertyGroup>
@@ -160,11 +160,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="EasyPost.pfx" />
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="RestSharp" Version="106.4.2" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\EasyPost.snk">
+      <Link>EasyPost.snk</Link>
+    </None>
   </ItemGroup>
 </Project>
